@@ -1,4 +1,4 @@
-class Transliterate:
+class Transliterator:
 
     @staticmethod
     def transliterate_ru_to_en(word):

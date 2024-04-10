@@ -5,7 +5,7 @@ from django.core.management import BaseCommand
 
 from dashboard.management.utils.validator import Validator
 from dashboard.models import Course, Classroom
-from dashboard.management.utils.populator import DBPopulateHelper as Populate
+from dashboard.management.utils.populator import Populator
 from users.models import Family
 
 User = get_user_model()
@@ -15,16 +15,16 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Сгенерируем популяцию
-        admin, staff, parents, students = 0, 0, 0, 0
-        # admin, staff, parents, students = 2, 5, 10, 10
+        # admin, staff, parents, students = 0, 0, 0, 0
+        admin, staff, parents, students = 2, 5, 10, 10
         for _ in range(admin):
-            Populate.create_new_user(User.Types.ADMIN)
+            Populator.create_new_user(User.Types.ADMIN)
         for _ in range(staff):
-            Populate.create_new_user(User.Types.STAFF)
+            Populator.create_new_user(User.Types.STAFF)
         for _ in range(parents):
-            Populate.create_new_user(User.Types.PARENT)
+            Populator.create_new_user(User.Types.PARENT)
         for _ in range(students):
-            Populate.create_new_user(User.Types.STUDENT)
+            Populator.create_new_user(User.Types.STUDENT)
         # --------------------------------------------
         """                 memo:
             k = choice(kids)
@@ -35,8 +35,6 @@ class Command(BaseCommand):
         """
         # Сгенерируем семейные связи (родитель-ребенок(студент))
         # --------------------------------------------
-        # Parent.objects.all().delete()
-        # Раскомментировать выше для очистки таблицы Parent и создания новых связей
         parents = User.objects.filter(type=User.Types.PARENT).order_by('?')
         students = User.objects.filter(type=User.Types.STUDENT).order_by('?')
         for i in range(len(students)):
@@ -49,15 +47,15 @@ class Command(BaseCommand):
         """
         # Сгенерируем отделения и предметы в них
         # --------------------------------------------
-        for course in Populate.data.courses:
-            Populate.create_new_course(course)
+        for course in Populator.data.courses:
+            Populator.create_new_course(course)
 
         pointer = 0
         for course in Course.objects.all():
-            while pointer < len(Populate.data.subjects):
-                if Populate.data.subjects[pointer] == '<--->':
+            while pointer < len(Populator.data.subjects):
+                if Populator.data.subjects[pointer] == '<--->':
                     break
-                Populate.create_new_subject(Populate.data.subjects[pointer], course)
+                Populator.create_new_subject(Populator.data.subjects[pointer], course)
                 pointer += 1
             pointer += 1
 
@@ -66,4 +64,6 @@ class Command(BaseCommand):
             Classroom.objects.create(title=i, description=f'Аудитория {i}')
         # --------------------------------------------
         # Расписание
-        Populate.parse_schedule_grid_to_db(Populate)
+        # print(now().isoweekday())  # 2
+        # Сгенерируем временные слоты на неделю
+        Populator.parse_schedule_grid_to_db()
