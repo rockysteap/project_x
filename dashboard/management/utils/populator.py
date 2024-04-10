@@ -47,13 +47,13 @@ class DBPopulateHelper:
             return now - timedelta(days=(365 * randint(33, 60) + randint(1, 365)))
 
     def get_unique_random_male_fullname(self) -> tuple[str, str]:
-        for _ in range(999):  # кол-во попыток во избежание вечного цикла
+        for _ in range(999):  # максимальное кол-во попыток
             f, l = choice(self.data.men_first_names), choice(self.data.men_last_names)
             if not Validator.is_value_present_in_db(self.gen_username(f, l), get_user_model(), 'username'):
                 return f, l
 
     def get_unique_random_female_fullname(self) -> tuple[str, str]:
-        for _ in range(999):  # кол-во попыток во избежание вечного цикла
+        for _ in range(999):  # максимальное кол-во попыток
             f, l = choice(self.data.women_first_names), choice(self.data.women_last_names)
             if not Validator.is_value_present_in_db(self.gen_username(f, l), get_user_model(), 'username'):
                 return f, l
@@ -97,15 +97,25 @@ class DBPopulateHelper:
     @staticmethod
     def parse_schedule_grid_to_db(self):
         # print(now().isoweekday())  # 2
-        for enum, item in enumerate(self.data.schedule_grid, start=1):
-            # enum - порядковый номер занятия
-            #                       остальные 5-12 ежедневно, воскресенье - выходной
-            # item - расписание одного урока в формате '10:00-10:45'
-            start, end = map(lambda s: s.split(':'), item.split('-'))
-            # "start, end" - расписание одного урока в формате "['10', '00'], ['10', '45']"
-            if not Validator.is_value_present_in_db(enum, ScheduleGrid, 'class_number'):
-                ScheduleGrid.objects.create(
-                    class_number=enum,
-                    time_start=time(*map(int, start)),
-                    time_end=time(*map(int, end)),
-                )
+        # ScheduleGrid.objects.all().delete()
+        for day in range(1, 7):  # (воскресенье выходной)
+            for enum, item in enumerate(self.data.schedule_grid, start=1):
+                # enum - порядковый номер занятия
+                #                       остальные 5-12 ежедневно, воскресенье - выходной
+                # item - расписание одного урока в формате '10:00-10:45'
+                start, end = map(lambda s: s.split(':'), item.split('-'))
+                # "start, end" - расписание одного урока в формате "['10', '00'], ['10', '45']"
+                time_start = *map(int, start),
+                time_end = *map(int, end),
+                if day != 6 and (time_start[0] < 14 or time_end[0] < 14):
+                    continue
+                if not (Validator.is_two_values_present_in_same_entry(
+                        [day, enum], ScheduleGrid, ['week_day', 'slot_number'])):
+                    # утренние занятия только в субботу
+                    print(day, enum, time_start, time_end)
+                    ScheduleGrid.objects.create(
+                        week_day=day,
+                        slot_number=enum,
+                        time_start=time(*time_start),
+                        time_end=time(*time_end),
+                    )

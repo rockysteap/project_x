@@ -35,7 +35,7 @@ class ScheduleGrid(models.Model):
         SUNDAY = 7
 
     week_day = models.IntegerField(choices=Weekday.choices)
-    class_number = models.IntegerField()
+    slot_number = models.IntegerField()
     time_start = models.TimeField()
     time_end = models.TimeField()
 
@@ -47,4 +47,4 @@ class Schedule(models.Model):
     classroom = models.ForeignKey('Classroom', on_delete=models.DO_NOTHING)
 
     def __str__(self):
-        return f'{self.time_start}: {self.subject}({self.teacher})'
+        return f'{self.subject}: {self.teacher}({self.classroom})'
