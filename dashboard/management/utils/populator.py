@@ -94,7 +94,8 @@ class Populator:
 
     @classmethod
     def create_new_subject(cls, subject_title, course_title):
-        if not Validator.is_value_present_in_db(subject_title, Subject, 'title'):
+        if not Validator.is_two_values_present_in_same_entry([subject_title, course_title], Subject,
+                                                             ['title', 'course_id']):
             Subject.objects.create(title=subject_title, course=course_title, description=subject_title)
 
     @classmethod
@@ -142,27 +143,32 @@ class Populator:
         grid = cls.get_week_schedule_grid()
         subjects_list = cls.get_courses_with_subjects()
         for course, subjects in subjects_list.items():
-            # Определим сдвиг курса пн, ср, пт или вт, чт, су на основе чет/нечет id
-            shift = 2 if course % 2 == 0 else 1  # с какого дня недели начнем 1 или 2
+            # Определим сдвиг курса пн, ср, пт или вт, чт, сб на основе чет/нечет id
+            shift = 1 if course % 2 == 0 else 0  # с какого дня недели начнем 1 или 2
             days_counter, week = 0 + shift, 6
             shuffle(subjects)
             while len(subjects) > 0:
-                # Пока есть хотя бы один предмет в курсе,
+                # Пока есть хотя бы один предмет в учебном курсе,
                 if not any(map(lambda x: len(x) > 0, grid.values())):
                     return
-                # проходим по дням недели со сдвигом
+                # проходим по дням недели со сдвигом,
+                # чтобы сделать распределение плавное распределение по всей неделе
                 current_day = days_counter % week + 1  # c % 6 = 0, 1, 2, 3, 4, 5, 0, 1, ..
-                if grid[current_day]:
-                    if not Validator.is_value_present_in_db(grid[current_day][0], Schedule, 'slot_id'):
+                if grid.get(current_day, None):
+                    _slot_id = ScheduleGrid.objects.get(week_day=current_day, slot_number=grid[current_day][0]).pk
+                    if not Validator.is_value_present_in_db(_slot_id, Schedule, 'slot_id'):
+                        # Проверка на свободный слот в расписании
                         Schedule.objects.create(
                             course=Course.objects.get(pk=course),
-                            subject=Subject.objects.get(title=subjects[0]),
+                            subject=Subject.objects.get(title=subjects[0], course=course),
                             teacher=get_user_model().objects.get(pk=4),
                             classroom=Classroom.objects.get(pk=1),
                             slot=ScheduleGrid.objects.get(week_day=current_day, slot_number=grid[current_day][0]),
                         )
-                        grid[current_day].remove(grid[current_day][0])
+                    grid[current_day].remove(grid[current_day][0])
                     subjects_list[course].remove(subjects[0])
+                    input()
                 days_counter += 2
-        print(grid)
-        print(subjects_list)
+
+        # print(grid)
+        # print(subjects_list)

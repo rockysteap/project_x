@@ -19,6 +19,11 @@ class Subject(models.Model):
         return self.title
 
 
+class Teacher(models.Model):
+    teacher = models.ForeignKey(get_user_model(), on_delete=models.PROTECT)
+    subject = models.ForeignKey('Subject', on_delete=models.PROTECT)
+
+
 class Classroom(models.Model):
     title = models.CharField(max_length=3, verbose_name='Аудитория')
     description = models.TextField(blank=True, null=True, verbose_name='Описание')

@@ -16,3 +16,4 @@ class Validator:
             return (model.objects.filter(**dict({field1: value1})).all()
                     .filter(**dict({field2: value2})).first()
                     is not None)
+        return False
