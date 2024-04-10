@@ -41,10 +41,11 @@ class ScheduleGrid(models.Model):
 
 
 class Schedule(models.Model):
-    subject = models.ForeignKey('Course', on_delete=models.DO_NOTHING)
+    course = models.ForeignKey('Course', on_delete=models.DO_NOTHING)
+    subject = models.ForeignKey('Subject', on_delete=models.DO_NOTHING)
     teacher = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING)
-    class_grid_number = models.ForeignKey('ScheduleGrid', on_delete=models.DO_NOTHING)
     classroom = models.ForeignKey('Classroom', on_delete=models.DO_NOTHING)
+    slot = models.ForeignKey('ScheduleGrid', on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return f'{self.subject}: {self.teacher}({self.classroom})'

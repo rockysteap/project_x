@@ -15,8 +15,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Сгенерируем популяцию
-        # admin, staff, parents, students = 0, 0, 0, 0
-        admin, staff, parents, students = 2, 5, 10, 10
+        admin, staff, parents, students = 0, 0, 0, 0
+        # admin, staff, parents, students = 2, 5, 5, 5
         for _ in range(admin):
             Populator.create_new_user(User.Types.ADMIN)
         for _ in range(staff):
@@ -64,6 +64,14 @@ class Command(BaseCommand):
             Classroom.objects.create(title=i, description=f'Аудитория {i}')
         # --------------------------------------------
         # Расписание
-        # print(now().isoweekday())  # 2
-        # Сгенерируем временные слоты на неделю
+        # Сгенерируем временнЫе слоты на неделю
         Populator.parse_schedule_grid_to_db()
+
+        # print(now().isoweekday())  # 2
+
+        # Сгенерируем расписание
+        print(Populator.get_week_schedule_grid())
+        print(Populator.get_courses_with_subjects())
+        #
+        #
+        Populator.generate_schedule()
