@@ -21,7 +21,7 @@ class Subject(models.Model):
 
 class Teacher(models.Model):
     teacher = models.ForeignKey(get_user_model(), on_delete=models.PROTECT)
-    subject = models.ForeignKey('Subject', on_delete=models.PROTECT)
+    course = models.ForeignKey('Course', on_delete=models.PROTECT)
 
 
 class Classroom(models.Model):
@@ -48,7 +48,7 @@ class ScheduleGrid(models.Model):
 class Schedule(models.Model):
     course = models.ForeignKey('Course', on_delete=models.DO_NOTHING)
     subject = models.ForeignKey('Subject', on_delete=models.DO_NOTHING)
-    teacher = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING)
+    teacher = models.ForeignKey('Teacher', on_delete=models.DO_NOTHING)
     classroom = models.ForeignKey('Classroom', on_delete=models.DO_NOTHING)
     slot = models.ForeignKey('ScheduleGrid', on_delete=models.DO_NOTHING)
 
