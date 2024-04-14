@@ -28,7 +28,7 @@ ALLOWED_HOSTS = [
     'localhost',
 ]
 
-# Application definition
+# Application definition ------------
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'users.apps.UsersConfig',
     'dashboard.apps.DashboardConfig',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +73,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project_x.wsgi.application'
 
-# Database
+# Database ------------
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
@@ -83,7 +83,7 @@ DATABASES = {
     }
 }
 
-# Password validation
+# Password validation ------------
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 # AUTH_PASSWORD_VALIDATORS = [
@@ -101,7 +101,7 @@ DATABASES = {
 #     },
 # ]
 
-# Internationalization
+# Internationalization ------------
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = 'ru-ru'
@@ -112,7 +112,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static files (CSS, JavaScript, Images)  ------------
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
@@ -121,27 +121,31 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
-# Default primary key field type
+# Default primary key field type  ------------
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Email
+# Authentication ------------
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-# Login
-
-
-# Authorization
+AUTH_USER_MODEL = 'users.User'
+# DEFAULT_USER_IMAGE = MEDIA_ROOT / 'users/images/default_user.png'
+DEFAULT_USER_IMAGE = 'https://placehold.co/200'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
+LOGIN_URL = 'users:login'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'users.authentication.EmailAuthBackend',
 )
-AUTH_USER_MODEL = 'users.User'
 
-# Конфигурация логирования
+# Email ------------
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# Log ------------
 
 LOGGING = {
     'version': 1,

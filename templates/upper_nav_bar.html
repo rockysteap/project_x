@@ -1,20 +1,21 @@
 {% load static %}
 
+<!-- Upper Nav Bar -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
+        <!-- Brand items -->
         <a class="navbar-brand" href="#">
             <img src="{% static '/images/logo.png' %}" alt="Logo" width="50" height="50">
         </a>
         <a class="navbar-brand" href="#">Школа искусств</a>
+        <!-- Toggler for small screens -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <!-- Nav Bar menu items -->
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="#">Новости</a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Наши отделения</a>
                 </li>
@@ -22,9 +23,13 @@
                     <a class="nav-link" href="#">Дополнительно</a>
                 </li>
             </ul>
-            <span class="navbar-text">
-                    <a class="nav-link" aria-current="page" href="#">Войти</a>
+
+            <!-- Authentication block -->
+            <span class="">
+                {% include 'users/auth_block.html' %}
             </span>
+            
         </div>
+
     </div>
 </nav>
