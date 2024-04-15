@@ -2,18 +2,18 @@
 <div class="m-1 text-center"><h1>{{ title }}</h1></div>
 <!-- Form type and container width -->
 {% if title == 'Профиль пользователя' %}
-<div class="container-fluid custom-width-350 form-group">
-<form method="post" enctype="multipart/form-data">
+    <div class="container-fluid custom-width-350 form-group">
+    <form method="post" enctype="multipart/form-data">
 
     {% if user.photo %}
-        <p class="rounded text-center"><img class="rounded img-thumbnail" sizes="300 200" src="{{ user.photo.url }}">
+        <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg" src="{{ user.photo.url }}">
             {% else %}
-        <p class="rounded text-center"><img class="rounded img-thumbnail" sizes="300 200" src="{{ default_image }}">
+        <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg" src="{{ default_image }}">
     {% endif %}
 
 {% else %}
-<div class="container-fluid custom-width-300 form-group">
-<form method="post">
+    <div class="container-fluid text-center custom-width-300 form-group">
+    <form method="post">
 {% endif %}
 
 {% csrf_token %}
@@ -24,30 +24,31 @@
 {% for f in form %}
     <div class="form-floating mt-3">
         <input class="form-control shadow-lg"
-               {% if f.field.disabled %}
-                   disabled
-               {% endif %}
+                {% if f.field.disabled %}
+               disabled
+                {% endif %}
                name="{{ f.name }}"
                type="{{ f.field.widget.input_type }}"
-               id="{{ f.id_for_label }}" autocomplete="on"
+               id="{{ f.id_for_label }}" autocomplete="off"
                value="{% if f.value %}{{ f.value }}{% endif %}"
                placeholder="">
         <label for="{{ f.id_for_label }}">{{ f.label }}</label>
-
-        <div class="">{{ f.error }}</div>
+        <div class="form-error">{{ f.errors }}</div>
     </div>
 {% endfor %}
 
 <!-- Buttons and extra elements -->
-    {% if title == 'Регистрация' %}
-    <div class="text-center px-0 pt-3"><button class="btn btn-info" type="submit">{{ btn_submit_title }}</button></div>
-    {% else %}
+{% if title == 'Регистрация' %}
+    <div class="text-center px-0 pt-3">
+        <button class="btn btn-info" type="submit">{{ btn_submit_title }}</button>
+    </div>
+{% else %}
     <div class="container px-0 pt-3 d-flex justify-content-between align-items-center">
     <button class="float-start btn btn-info" type="submit">{{ btn_submit_title }}</button>
-    {% endif %}
-    {% if title == 'Авторизация' %}{% include 'users/el_forgot_password.html' %}{% endif %}
-    {% if title == 'Профиль пользователя' %}{% include 'users/el_change_password.html' %}{% endif %}
-    </div>
+{% endif %}
+{% if title == 'Авторизация' %}{% include 'users/el_forgot_password.html' %}{% endif %}
+{% if title == 'Профиль пользователя' %}{% include 'users/el_change_password.html' %}{% endif %}
+</div>
 
 </form>
 </div>

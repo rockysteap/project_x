@@ -21,3 +21,9 @@ body {
 .custom-width-800 {
     max-width: 800px;
 }
+
+.form-error {
+    list-style: none;
+    padding: 0;
+    color: #CC0000;
+}

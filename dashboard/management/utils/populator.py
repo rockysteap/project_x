@@ -72,7 +72,7 @@ class Populator:
         gender = cls.get_random_gender()
         first_name, last_name = cls.get_random_full_name(gender)
         username = cls.gen_username(first_name, last_name)
-        # TODO: вернуть юзеров с закрытыми паролями
+        # TODO: вернуть юзерам пароли pbkdf2_sha256
         # get_user_model().objects.create_user(
         get_user_model().objects.create(
             username=username,

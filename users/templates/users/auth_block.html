@@ -2,7 +2,9 @@
     <form id="logout-form" method="post" action="{% url 'users:logout' %}">
         {% csrf_token %}
         <a class="btn btn-outline-success" href="{% url 'users:profile' %}">
-            {{ user.first_name }} {{ user.last_name }}</a>
+            {% if user.first_name %}{{ user.first_name }} {{ user.last_name }}
+                {% else %}{{ user.username }}{% endif %}
+        </a>
         <button class="btn btn-outline-secondary" type="submit">Выйти</button>
     </form>
 {% else %}

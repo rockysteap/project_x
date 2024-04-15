@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'dashboard.apps.DashboardConfig',
-    'users.apps.UsersConfig',
+    'dashboard',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -131,8 +131,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 # DEFAULT_USER_IMAGE = MEDIA_ROOT / 'users/images/default_user.png'
 DEFAULT_USER_IMAGE = 'https://placehold.co/200'
-LOGIN_REDIRECT_URL = 'index'
-LOGOUT_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'users:profile'
+LOGOUT_REDIRECT_URL = 'users:login'
 LOGIN_URL = 'users:login'
 
 AUTHENTICATION_BACKENDS = (

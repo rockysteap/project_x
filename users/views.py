@@ -30,9 +30,7 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
         'default_image': settings.DEFAULT_USER_IMAGE,
         'btn_submit_title': 'Сохранить',
     }
-
-    def get_success_url(self):
-        return reverse_lazy('users:profile')
+    success_url = reverse_lazy('users:profile')
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -42,4 +40,3 @@ class UserPasswordChange(PasswordChangeView):
     form_class = UserPasswordChangeForm
     success_url = reverse_lazy('users:password_change_done')
     template_name = 'users/password_change_form.html'
-    # extra_context = {'title': 'Изменение пароля', 'btn_submit_title': 'Сохранить'}
