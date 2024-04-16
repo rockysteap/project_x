@@ -1,15 +1,12 @@
 {% extends 'master.html' %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-</head>
-<body>
+{% load user_tags %}
 
 {% block content %}
-{% endblock content %}
 
-</body>
-</html>
+    <div class="pt-5 m-1 text-center"><h1>{{ title|default:'Добро пожаловать на наш сайт!' }}</h1></div>
+
+    <div class="h6 container-fluid custom-width-800">
+        {% include 'dashboard/welcome.html' %}
+    </div>
+
+{% endblock content %}
