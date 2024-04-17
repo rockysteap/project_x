@@ -7,8 +7,8 @@
     <form method="post" enctype="multipart/form-data">
 
     {% if user.photo %}
-{#        Checking for image path - Path to profile page - kill it on prod #}
-{#        <div class="text-danger p-3">{{ user.photo.url }}</div>#}
+        {#        Checking for image path - Path to profile page - kill it on prod #}
+        {#        <div class="text-danger p-3">{{ user.photo.url }}</div>#}
         {% with user.photo.url|slice:":21" as path_checker %}
             {% if path_checker == '{{ path_filter }}' %}
                 {% with user.photo.url|slice:"7:" as path %}
@@ -42,7 +42,11 @@
                name="{{ f.name }}"
                type="{{ f.field.widget.input_type }}"
                id="{{ f.id_for_label }}" autocomplete="off"
-               value="{% if f.value %}{{ f.value }}{% endif %}"
+                {% if f.name == 'date_of_birth' %}
+                   value="{% if f.value %}{{ f.value|date:"d.m.Y" }}{% endif %}"
+                {% else %}
+                   value="{% if f.value %}{{ f.value }}{% endif %}"
+                {% endif %}
                placeholder="">
         <label for="{{ f.id_for_label }}">{{ f.label }}</label>
         <div class="form-error">{{ f.errors }}</div>
