@@ -8,9 +8,9 @@ class AddArticleForm(forms.ModelForm):
         model = Article
         fields = ('title', 'is_published', 'category', 'content', 'image_main')
         widgets = {
-            'title': forms.TextInput(),
-            'is_published': forms.BooleanField(),
-            'category': forms.Select(),
-            'content': forms.Textarea(),
-            'image_main': forms.FileInput(),
+            'title': forms.Textarea(attrs={'cols': 80, 'rows': 1, 'class': 'form-control'}),
+            'is_published': forms.CheckboxInput(),
+            'category': forms.RadioSelect(choices=['PUBLIC', 'STAFF']),
+            'content': forms.TextInput(attrs={'cols': 80, 'rows': 10, 'class': 'form-control'}),
+            'image_main': forms.FileInput(attrs={'class': 'form-control'}),
         }

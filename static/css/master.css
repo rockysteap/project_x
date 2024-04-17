@@ -18,9 +18,14 @@ body {
     max-width: 600px;
 }
 
+.custom-width-700 {
+    max-width: 700px;
+}
+
 .custom-width-800 {
     max-width: 800px;
 }
+
 
 .form-error {
     list-style: none;

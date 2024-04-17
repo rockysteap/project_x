@@ -1,0 +1,23 @@
+{% extends 'master.html' %}
+
+{% block content %}
+    <div class="container mt-3 custom-width-700">
+        <div class="row">
+            <div class="">
+                <div class="m-0">
+                    <div class="h4 text-end">{{ template_title }}</div>
+                    {% if article.image_main %}
+                        <img class="float-start shadow-lg mt-2 me-2 custom-width-300"
+                             src="{{ article.image_main.url }}">
+                    {% endif %}
+                    <hr/>
+                    <h6>{{ article.content|linebreaks }}</h6>
+                </div>
+                <div style="text-align: left;" class="col-lg-5">
+                </div>
+                <div class="text-end"><a class="btn btn-outline-secondary" href="{% url 'news' %}">
+                    Вернуться к списку новостей</a></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
