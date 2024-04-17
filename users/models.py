@@ -32,7 +32,7 @@ class User(AbstractUser):
     phoneNumberRegex = RegexValidator(regex=r"^\+?1?\d{8,15}$")
     phone_number = models.CharField(validators=[phoneNumberRegex], blank=True, null=True, max_length=16, unique=True,
                                     verbose_name='Номер телефона')
-    photo = models.ImageField(upload_to="users/images/", blank=True, null=True, verbose_name="Фотография")
+    photo = models.ImageField(upload_to="users/images/%Y/%m/%d", blank=True, null=True, verbose_name="Фотография")
     date_of_birth = models.DateField(null=True, blank=True, verbose_name="Дата рождения")
     memo = models.TextField(blank=True, null=True, verbose_name='Дополнительная информация')
 
