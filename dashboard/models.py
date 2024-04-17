@@ -20,7 +20,8 @@ class Article(models.Model):
     time_created = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     time_posted = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
     is_published = models.BooleanField(default=False, verbose_name='Статус')
-    image = models.ManyToManyField('Image', blank=True, related_name='articles', verbose_name='Изображения')
+    image_main = models.ImageField(blank=True, null=True, upload_to='articles/images/%Y/%m/%d',)
+    image_collage = models.ManyToManyField('Image', blank=True, related_name='articles', verbose_name='Изображения')
 
     def save(self, *args, **kwargs):
         self.slug = slugify(Transliterator.transliterate_ru_to_en(self.title))
