@@ -73,8 +73,8 @@ class Populator:
         first_name, last_name = cls.get_random_full_name(gender)
         username = cls.gen_username(first_name, last_name)
         # TODO: вернуть юзерам пароли pbkdf2_sha256
-        # get_user_model().objects.create_user(
-        get_user_model().objects.create(
+        # get_user_model().objects.create(
+        get_user_model().objects.create_user(
             username=username,
             first_name=first_name,
             last_name=last_name,

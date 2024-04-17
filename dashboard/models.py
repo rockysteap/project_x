@@ -13,15 +13,15 @@ class Course(models.Model):
 class Subject(models.Model):
     title = models.CharField(max_length=100, verbose_name='Предмет')
     description = models.TextField(blank=True, null=True, verbose_name='Описание')
-    course = models.ForeignKey('Course', on_delete=models.PROTECT)
+    course = models.ForeignKey('Course', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
 
 
 class Teacher(models.Model):
-    teacher = models.ForeignKey(get_user_model(), on_delete=models.PROTECT)
-    course = models.ForeignKey('Course', on_delete=models.PROTECT)
+    teacher = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    course = models.ForeignKey('Course', on_delete=models.CASCADE)
 
 
 class Classroom(models.Model):
@@ -46,11 +46,11 @@ class ScheduleGrid(models.Model):
 
 
 class Schedule(models.Model):
-    course = models.ForeignKey('Course', on_delete=models.DO_NOTHING)
-    subject = models.ForeignKey('Subject', on_delete=models.DO_NOTHING)
-    teacher = models.ForeignKey('Teacher', on_delete=models.DO_NOTHING)
-    classroom = models.ForeignKey('Classroom', on_delete=models.DO_NOTHING)
-    slot = models.ForeignKey('ScheduleGrid', on_delete=models.DO_NOTHING)
+    course = models.ForeignKey('Course', on_delete=models.CASCADE)
+    subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
+    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
+    classroom = models.ForeignKey('Classroom', on_delete=models.CASCADE)
+    slot = models.ForeignKey('ScheduleGrid', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.subject}: {self.teacher}({self.classroom})'
