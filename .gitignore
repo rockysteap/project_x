@@ -130,3 +130,8 @@ dmypy.json
 
 # PyCharm .idea/
 .idea/
+/users/migrations/0001_initial.py
+
+# Migrations
+/dashboard/migrations/
+/users/migrations/
