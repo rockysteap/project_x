@@ -1,8 +1,8 @@
 {% load user_tags %}
-<!-- Title -->
-<div class="m-1 text-center"><h1>{{ title }}</h1></div>
+<!-- Template title -->
+<div class="m-1 text-center"><h1>{{ template_title }}</h1></div>
 <!-- Form type and container width -->
-{% if title == 'Профиль пользователя' %}
+{% if template_title == 'Профиль пользователя' %}
     <div class="container-fluid custom-width-350 form-group">
     <form method="post" enctype="multipart/form-data">
 
@@ -20,7 +20,7 @@
             {% endif %}
         {% endwith %}
     {% else %}
-        <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg" src="{{ default_image }}">
+        <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg" src="{{ default_user_image }}">
     {% endif %}
 
 {% else %}
@@ -54,7 +54,7 @@
 {% endfor %}
 
 <!-- Buttons and extra elements -->
-{% if title == 'Регистрация' %}
+{% if template_title == 'Регистрация' %}
     <div class="text-center px-0 pt-3">
         <button class="btn btn-info" type="submit">{{ btn_submit_title }}</button>
     </div>
@@ -62,8 +62,8 @@
     <div class="container px-0 pt-3 d-flex justify-content-between align-items-center">
     <button class="float-start btn btn-info" type="submit">{{ btn_submit_title }}</button>
 {% endif %}
-{% if title == 'Авторизация' %}{% include 'users/el_forgot_password.html' %}{% endif %}
-{% if title == 'Профиль пользователя' %}{% include 'users/el_change_password.html' %}{% endif %}
+{% if template_title == 'Авторизация' %}{% include 'users/el_forgot_password.html' %}{% endif %}
+{% if template_title == 'Профиль пользователя' %}{% include 'users/el_change_password.html' %}{% endif %}
 </div>
 
 </form>
