@@ -16,7 +16,7 @@
 {#                                 src="{{ article.image_main.url }}">#}
                         {% endif %}
                         <hr/>
-                        <h6>{{ article.content|linebreaks }}</h6>
+                        <h6>{{ article.content|linebreaks|truncatewords:20 }}</h6>
                     </div>
                     <div style="text-align: left;" class="col-lg-5">
                     </div>

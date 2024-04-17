@@ -15,10 +15,12 @@ class Populator:
 
     @classmethod
     def get_random_gender(cls):
+        """Рандомизатор пола"""
         return choice(['M', 'F'])
 
     @classmethod
     def gen_unique_random_phone_number(cls):
+        """ Генератор уникального (для текущей БД) номера телефона """
         for _ in range(999):
             phone_number = f"+7{''.join([str(randint(0, 9)) for _ in range(10)])}"
             if not Validator.is_value_present_in_db(phone_number, get_user_model(), 'phone_number'):
@@ -26,14 +28,18 @@ class Populator:
 
     @classmethod
     def gen_username(cls, first_name, last_name):
+        """ Перевод имени и фамилии с помощью транслитерации """
+        """ Конкатенация результатов транслитерации с целью создания имени пользователя """
         return f"{Transliterator.transliterate_ru_to_en(first_name)}_{Transliterator.transliterate_ru_to_en(last_name)}"
 
     @classmethod
     def gen_email(cls, username):
+        """ Преобразование имени пользователя в адрес электронной почты"""
         return f"{username}@mail.ml"
 
     @classmethod
     def gen_birthday(cls, user_type: get_user_model().Types) -> timezone:
+        """ Генерация даты рождения с учетом типа пользователя"""
         # Для снижения проверок при привязке родителей к детям примем следующий разброс возрастов:
         # админы и преподаватели -> 23 - 65
         # дети (студенты) -> 7 - 15
@@ -48,6 +54,7 @@ class Populator:
 
     @classmethod
     def get_unique_random_male_fullname(cls) -> tuple[str, str]:
+        """ Генерация уникального (с точки зрения текущей БД) имени пользователя мужского пола """
         for _ in range(999):  # максимальное кол-во попыток
             f, l = choice(cls.data.men_first_names), choice(cls.data.men_last_names)
             if not Validator.is_value_present_in_db(cls.gen_username(f, l), get_user_model(), 'username'):
@@ -55,6 +62,7 @@ class Populator:
 
     @classmethod
     def get_unique_random_female_fullname(cls) -> tuple[str, str]:
+        """ Генерация уникального (с точки зрения текущей БД) имени пользователя женского пола """
         for _ in range(999):  # максимальное кол-во попыток
             f, l = choice(cls.data.women_first_names), choice(cls.data.women_last_names)
             if not Validator.is_value_present_in_db(cls.gen_username(f, l), get_user_model(), 'username'):
@@ -62,6 +70,7 @@ class Populator:
 
     @classmethod
     def get_random_full_name(cls, gender):
+        """ Парсер для генерации имени с учетом пола """
         if gender == 'M':
             return cls.get_unique_random_male_fullname()
         if gender == 'F':
@@ -69,6 +78,7 @@ class Populator:
 
     @classmethod
     def create_new_user(cls, user_type):
+        """ Создание нового пользователя """
         gender = cls.get_random_gender()
         first_name, last_name = cls.get_random_full_name(gender)
         username = cls.gen_username(first_name, last_name)
@@ -91,22 +101,26 @@ class Populator:
 
     @classmethod
     def create_new_course(cls, course_title):
+        """ Создание нового отделения """
         if not Validator.is_value_present_in_db(course_title, Course, 'title'):
             Course.objects.create(title=course_title, description=course_title)
 
     @classmethod
     def create_courses(cls):
+        """ Парсер для создания новых отделений """
         for course in cls.data.courses:
             cls.create_new_course(course)
 
     @classmethod
     def create_new_subject(cls, subject_title, course_title):
+        """ Создание нового предмета """
         if not Validator.is_two_values_present_in_same_entry([subject_title, course_title], Subject,
                                                              ['title', 'course_id']):
             Subject.objects.create(title=subject_title, course=course_title, description=subject_title)
 
     @classmethod
     def create_subjects(cls):
+        """ Парсер для создания нового предмета """
         pointer = 0
         for course in Course.objects.all():
             while pointer < len(cls.data.subjects):
@@ -118,6 +132,7 @@ class Populator:
 
     @classmethod
     def link_teacher_to_course(cls, teacher, course):
+        """ Связывание преподавателя с отделением """
         # if not Validator.is_value_present_in_db(teacher.pk, Teacher, 'teacher'):
         if not Validator.is_two_values_present_in_same_entry(
                 [teacher.pk, course.pk], Teacher, ['teacher', 'course']):
@@ -125,6 +140,7 @@ class Populator:
 
     @classmethod
     def link_teachers_to_courses(cls):
+        """ Парсер для связывания преподавателей с отделениями """
         courses = Course.objects.all()
         teachers = get_user_model().objects.filter(type=get_user_model().Types.STAFF)
         # Распределим преподавателей поровну
@@ -140,6 +156,7 @@ class Populator:
 
     @classmethod
     def create_classrooms(cls, floors, rooms):
+        """ Генерация номеров кабинетов """
         for i in range(1, floors + 1):
             for j in range(1, rooms + 1):
                 room = f'{i}.{j}'
@@ -148,6 +165,7 @@ class Populator:
 
     @classmethod
     def parse_schedule_grid_to_db(cls):
+        """ Создание недельной сетки расписания """
         for day in range(1, 7):  # (воскресенье выходной)
             for enum, item in enumerate(cls.data.schedule_grid, start=1):
                 # enum - порядковый номер занятия
@@ -171,6 +189,7 @@ class Populator:
 
     @classmethod
     def get_week_schedule_grid(cls):
+        """ Геттер таблицы недельной сетки расписания """
         result: dict = {}
         for item in ScheduleGrid.objects.all():
             result.setdefault(item.week_day, [])
@@ -179,6 +198,7 @@ class Populator:
 
     @classmethod
     def get_courses_with_subjects(cls):
+        """ Геттер таблицы связи отделений с предметами """
         result: dict = {}
         for item in Subject.objects.all():
             result.setdefault(item.course_id, [])
@@ -187,6 +207,7 @@ class Populator:
 
     @classmethod
     def generate_schedule(cls):
+        """ Генерация расписания с привязкой ко времени предмета, преподавателя и аудитории """
         Schedule.objects.all().delete()
         grid = cls.get_week_schedule_grid()
         subjects_list = cls.get_courses_with_subjects()

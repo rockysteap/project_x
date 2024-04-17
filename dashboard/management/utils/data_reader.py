@@ -8,6 +8,9 @@ class DataReader:
         'men_last_names.txt',
         'women_first_names.txt',
         'women_last_names.txt',
+        'news.txt',
+        'news_titles.txt',
+        'hosted_links.txt',
     ]
 
     def __init__(self):
@@ -18,6 +21,9 @@ class DataReader:
          self.men_last_names,
          self.women_first_names,
          self.women_last_names,
+         self.news,
+         self.news_titles,
+         self.hosted_links,
          ) = (None for _ in range(len(self.files)))
         self.read_all()
 
@@ -34,5 +40,8 @@ class DataReader:
          self.men_first_names,
          self.men_last_names,
          self.women_first_names,
-         self.women_last_names
+         self.women_last_names,
+         self.news,
+         self.news_titles,
+         self.hosted_links,
          ) = self.data
