@@ -1,13 +1,17 @@
 {% load user_tags %}
 
 {% external_image_hosting as hosting %}
-{% with user.photo.url|slice:"16:"|slice:":7" as part_of_user_photo_url %}
-    {% if part_of_user_photo_url == hosting %}
-        {% with user.photo.url|slice:"16:" as path %}
-            <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg"
-                                        src="{{ 'https://'|concat_strings:path }}">
+{% with hosting|length|stringformat:"i" as hl %}
+    {% with sliced_tale=hl|concat_strings:":" sliced_head=":"|concat_strings:hl %}
+        {% with user.photo.url|slice:sliced_tale|slice:sliced_head as part_of_user_photo_url %}
+            {% if part_of_user_photo_url == hosting %}
+                {% with user.photo.url|slice:sliced_tale as path %}
+                    <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg"
+                                                src="{{ 'https://'|concat_strings:path }}">
+                {% endwith %}
+            {% else %}
+                <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg" src="{{ user.photo.url }}">
+            {% endif %}
         {% endwith %}
-    {% else %}
-        <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg" src="{{ user.photo.url }}">
-    {% endif %}
+    {% endwith %}
 {% endwith %}
