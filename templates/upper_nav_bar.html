@@ -20,7 +20,7 @@
                     <a class="nav-link" href="{% url 'news' %}">Новости</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Отделения</a>
+                    <a class="nav-link" href="{% url 'courses' %}">Отделения</a>
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">

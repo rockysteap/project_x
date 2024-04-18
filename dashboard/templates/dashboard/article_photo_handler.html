@@ -1,0 +1,18 @@
+{% load user_tags %}
+
+{% external_image_hosting as hosting %}
+{% with hosting|length|stringformat:"i" as hl %}
+    {% with sliced_tale=hl|concat_strings:":" sliced_head=":"|concat_strings:hl %}
+        {% with article.image_main.url|slice:sliced_tale|slice:sliced_head as part_of_image_url %}
+            {% if part_of_image_url == hosting %}
+                {% with article.image_main.url|slice:sliced_tale as path %}
+                    <div class="text-start"><img class="float-start shadow-lg mt-2 me-2 custom-width-250 border border-1 border-dark rounded-start-5" src="{{ 'https://'|concat_strings:path }}">
+                    </div>
+                {% endwith %}
+            {% else %}
+                <div class="text-center"><img class="float-start shadow-lg mt-2 me-2 custom-width-250 border border-1 border-dark rounded-start-5" src="{{ article.image_main.url }}">
+                </div>
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+{% endwith %}

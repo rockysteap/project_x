@@ -6,7 +6,7 @@
     <form method="post" enctype="multipart/form-data">
 
     {% if user.photo %}
-        {% include 'users/photo_handler.html' %}
+        {% include 'users/user_photo_handler.html' %}
     {% else %}
         <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg" src="{{ default_user_image }}">
     {% endif %}

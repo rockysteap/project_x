@@ -2,6 +2,10 @@ body {
     background-color: #c9c9c9;
 }
 
+.custom-width-250 {
+    max-width: 250px;
+}
+
 .custom-width-300 {
     max-width: 300px;
 }
@@ -25,7 +29,6 @@ body {
 .custom-width-800 {
     max-width: 800px;
 }
-
 
 .form-error {
     list-style: none;

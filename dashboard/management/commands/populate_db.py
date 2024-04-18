@@ -19,8 +19,8 @@ class Command(BaseCommand):
         # --------------------------------------------
         # Для корректной генерации расписания необходимо
         # изначально сгенерировать минимум 20 учителей (staff)
-        admin, staff, parents, students = 0, 0, 0, 0
-        # admin, staff, parents, students = 2, 20, 50, 75
+        admin, staff, parents, students = 2, 20, 50, 75
+        # admin, staff, parents, students = 0, 0, 0, 0
         for _ in range(admin):
             Populator.create_new_user(User.Types.ADMIN)
         for _ in range(staff):

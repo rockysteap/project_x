@@ -3,29 +3,33 @@
 {% block content %}
     <div class="m-1 text-center"><h1>{{ template_title }}</h1></div>
 
+    <div class="container custom-width-700">
+    {% include 'dashboard/pagination.html' %}
+
     {% for article in news %}
 
-        <div class="container mt-3 custom-width-700">
             <div class="row">
-                <div class="">
-                    <div class="m-0">
-                        <div class="h4 text-end">{{ article.title }}</div>
-                        {% if article.image_main %}
-                            <img src="https://iimg.su/s/17/diN5nJ5OO0i6HZx5Dr00t5XxNIRkzdlD2tS5npT4.jpg">
-{#                            <img class="float-start shadow-lg mt-2 me-2 custom-width-300"#}
-{#                                 src="{{ article.image_main.url }}">#}
-                        {% endif %}
-                        <hr/>
-                        <h6>{{ article.content|linebreaks|truncatewords:20 }}</h6>
-                    </div>
-                    <div style="text-align: left;" class="col-lg-5">
-                    </div>
+                <div class="mb-5">
+                    <div class="h4 text-end">{{ article.title }}</div>
+
+                    {% if article.image_main %}
+                        {% include 'dashboard/article_photo_handler.html' %}
+                    {% else %}
+                        <img class="float-start shadow-lg mt-2 me-2 custom-width-300"
+                             src="https://placehold.co/300">
+                    {% endif %}
+                    <hr class=""/>
+                    <div class="py-0 m-0 text-end" style="font-size: x-small">{{ article.time_updated }}</div>
+                    <div class="h6 pt-1">{{ article.content|linebreaks|truncatewords:35 }}</div>
+
                     <div class="text-end"><a class="btn btn-outline-secondary" href="{{ article.get_absolute_url }}">
                         Читать новость целиком</a></div>
                 </div>
             </div>
-        </div>
 
     {% endfor %}
+
+    {% include 'dashboard/pagination.html' %}
+    </div>
 
 {% endblock %}

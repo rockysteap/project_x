@@ -96,7 +96,8 @@ class Populator:
         gender = cls.get_random_gender()
         first_name, last_name = cls.get_random_full_name(gender)
         username = cls.gen_username(first_name, last_name)
-        image = choice(cls.get_images_by_filter(rang=gender, kind=user_type))
+        images = cls.get_images_by_filter(rang=gender, kind=user_type)
+        image = choice(images) if images else None
         # TODO: вернуть юзерам пароли pbkdf2_sha256
         # get_user_model().objects.create(
         get_user_model().objects.create_user(
@@ -285,15 +286,17 @@ class Populator:
                 # Если в конце предложения нет пробела, значит следующее с новой строки.
                 news_item += (cls.data.news[i]
                               if (cls.data.news[i].endswith('. ') or cls.data.news[i].endswith('! '))
-                              else cls.data.news[i] + '\n')
+                              else cls.data.news[i] + '\n\n')
                 i += 1
         return news_with_titles
 
     @classmethod
-    def create_news_article(cls, title: str, content: str, image_url: str = None, is_published: bool = False) -> None:
+    def create_news_article(cls, title: str, content: str, time_created: timezone, time_updated: timezone,
+                            image_url: str = None, is_published: bool = False) -> None:
         """ Генерация новостной записи с уникальным (для текущей БД) заголовком """
         if not Validator.is_value_present_in_db(title, Article, 'title'):
-            Article.objects.create(title=title, content=content, image_main=image_url, is_published=is_published)
+            Article.objects.create(title=title, content=content, image_main=image_url, is_published=is_published,
+                                   time_created=time_created, time_updated=time_updated)
 
     @classmethod
     def generate_news(cls):
@@ -303,4 +306,7 @@ class Populator:
         images = cls.get_images_by_filter('N', 'NEWS')
         for title, news_item in news_dict.items():
             image = choice(images)
-            cls.create_news_article(title=title, content=news_item, image_url=image, is_published=True)
+            time_created = timezone.now() - timedelta(days=randint(2, 30), hours=randint(1, 23), minutes=randint(1, 59))
+            time_updated = time_created
+            cls.create_news_article(title=title, content=news_item, image_url=image, is_published=True,
+                                    time_created=time_created, time_updated=time_updated)

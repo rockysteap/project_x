@@ -1,10 +1,11 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, DetailView, ListView, RedirectView, View
 
 from dashboard.forms import AddArticleForm
-from dashboard.models import Article
+from dashboard.models import Article, Course
 from dashboard.utils import ExtraContextMixin
 
 
@@ -59,7 +60,17 @@ class ShowArticle(ExtraContextMixin, DetailView):
 class ShowNews(ExtraContextMixin, ListView):
     template_name = 'dashboard/news.html'
     context_object_name = 'news'
-    template_title = 'Наши новости'
+    template_title = 'Новости'
+    paginate_by = 5
 
     def get_queryset(self):
-        return Article.objects.order_by('-time_posted')
+        return Article.objects.order_by('-time_updated')
+
+
+class ShowCourses(ExtraContextMixin, ListView):
+    template_name = 'dashboard/courses.html'
+    context_object_name = 'courses'
+    template_title = 'Отделения'
+
+    def get_queryset(self):
+        return Course.objects.all()

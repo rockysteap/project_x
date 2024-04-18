@@ -1,0 +1,61 @@
+{% extends 'master.html' %}
+
+{% block content %}
+    <div class="mt-3 text-center"><h2>{{ template_title }}</h2></div>
+    <div class="mt-3 container-fluid text-center custom-width-800">
+
+        <div class="row">
+            <div class="col text-end badge fs-6">
+                <div>Изобразительное искусство</div>
+            </div>
+
+            <div class="col text-start badge fs-6">
+                <div>Хореографическое отделение</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end badge fs-6">
+                <a href="{% url 'news' %}">
+                <img src="https://iimg.su/s/18/zcC9bXnRCZ6WfXhQUFK3iwwada2e7QWkikklKnxH.jpg" alt=""
+                     class="float-end shadow-lg custom-width-250 border border-1 border-dark rounded-start-5">
+                </a>
+            </div>
+
+            <div class="col text-start badge fs-6">
+                <a href="{% url 'news' %}">
+                    <img src="https://iimg.su/s/18/TyY3MvDR0VCK1Mi4B9iP2C8ES8aI6PIqkzRRfIvq.jpg" alt=""
+                         class="float-start shadow-lg custom-width-250 border border-1 border-dark rounded-end-5">
+                </a>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col text-end badge fs-6">
+                <a href="{% url 'news' %}">
+                <img src="https://iimg.su/s/18/zeQa12QoAf3wyCqnMztHP4WLLCHEDiqmwWVb7evm.jpg" alt=""
+                     class="float-end shadow-lg custom-width-250 border border-1 border-dark rounded-start-5">
+                </a>
+            </div>
+
+            <div class="col text-start badge fs-6">
+                <a href="{% url 'news' %}">
+                <img src="https://iimg.su/s/18/PmRBoK8vrGSdALEHxKXexHwymF9fMTo6OE4qSQAQ.jpg" alt=""
+                     class="float-start shadow-lg custom-width-250 border border-1 border-dark rounded-end-5">
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-end badge fs-6">
+                <div>Музыкальное отделение</div>
+            </div>
+
+            <div class="col text-start badge fs-6">
+                <div>Театральное искусство</div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.utils.text import slugify
 
 from dashboard.management.utils.transliterator import Transliterator
@@ -18,8 +18,12 @@ class Article(models.Model):
     category = models.CharField(choices=Category.choices, default=Category.STAFF, max_length=6,
                                 verbose_name='Категория')
     content = models.TextField(blank=True, verbose_name='Текст статьи')
-    time_created = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
-    time_posted = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
+    # TODO swap before prod --------------------------------------------------------------------
+    # time_created = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
+    # time_updated = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
+    time_created = models.DateTimeField(verbose_name='Время создания')  # TODO swap before prod
+    time_updated = models.DateTimeField(verbose_name='Время изменения')  # TODO swap before prod
+    # TODO swap before prod --------------------------------------------------------------------
     is_published = models.BooleanField(default=False, verbose_name='Опубликовано')
     image_main = models.ImageField(blank=True, null=True, upload_to='articles/images/%Y/%m/%d',
                                    verbose_name='Основное изображение')
@@ -50,10 +54,18 @@ class Image(models.Model):
 
 class Course(models.Model):
     title = models.CharField(max_length=100, unique=True, verbose_name='Отделение')
+    slug = models.SlugField(max_length=250, unique=True, verbose_name="Slug")
     description = models.TextField(blank=True, null=True, verbose_name='Описание')
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(Transliterator.transliterate_ru_to_en(self.title))
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('course', kwargs={'course_slug': self.slug})
 
 
 class Subject(models.Model):
