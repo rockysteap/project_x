@@ -63,3 +63,11 @@ class Command(BaseCommand):
         # --------------------------------------------
         Populator.generate_schedule()
         # --------------------------------------------
+        # Сгенерируем новости
+        # --------------------------------------------
+        # Populator.generate_news()
+
+        # print(Populator.get_news_with_titles())
+        print(Populator.get_images_by_filter('N', 'NEWS'))
+        # --------------------------------------------
+        #

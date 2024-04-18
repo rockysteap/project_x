@@ -7,19 +7,19 @@ from django.utils import timezone
 from dashboard.management.utils.data_reader import DataReader
 from dashboard.management.utils.validator import Validator
 from dashboard.management.utils.transliterator import Transliterator
-from dashboard.models import Course, Subject, ScheduleGrid, Schedule, Classroom, Teacher
+from dashboard.models import Course, Subject, ScheduleGrid, Schedule, Classroom, Teacher, Article
 
 
 class Populator:
     data = DataReader()
 
     @classmethod
-    def get_random_gender(cls):
+    def get_random_gender(cls) -> str:
         """Рандомизатор пола"""
         return choice(['M', 'F'])
 
     @classmethod
-    def gen_unique_random_phone_number(cls):
+    def gen_unique_random_phone_number(cls) -> str:
         """ Генератор уникального (для текущей БД) номера телефона """
         for _ in range(999):
             phone_number = f"+7{''.join([str(randint(0, 9)) for _ in range(10)])}"
@@ -27,13 +27,13 @@ class Populator:
                 return phone_number
 
     @classmethod
-    def gen_username(cls, first_name, last_name):
+    def gen_username(cls, first_name, last_name) -> str:
         """ Перевод имени и фамилии с помощью транслитерации """
         """ Конкатенация результатов транслитерации с целью создания имени пользователя """
         return f"{Transliterator.transliterate_ru_to_en(first_name)}_{Transliterator.transliterate_ru_to_en(last_name)}"
 
     @classmethod
-    def gen_email(cls, username):
+    def gen_email(cls, username) -> str:
         """ Преобразование имени пользователя в адрес электронной почты"""
         return f"{username}@mail.ml"
 
@@ -69,7 +69,7 @@ class Populator:
                 return f, l
 
     @classmethod
-    def get_random_full_name(cls, gender):
+    def get_random_full_name(cls, gender) -> tuple[str, str]:
         """ Парсер для генерации имени с учетом пола """
         if gender == 'M':
             return cls.get_unique_random_male_fullname()
@@ -77,11 +77,26 @@ class Populator:
             return cls.get_unique_random_female_fullname()
 
     @classmethod
-    def create_new_user(cls, user_type):
-        """ Создание нового пользователя """
+    def get_images_by_filter(cls, rang: str, kind: str) -> list[str]:
+        """ Парсер для группировки ссылок из хостинга изображений по фильтру
+        :param rang: Содержание (F-female, M-male, N-news)
+        :param kind: Разновидность (STUDENT, STAFF, NEWS)
+        :return:
+        """
+        result = []
+        for link in cls.data.hosted_links:
+            r, k, l = link.split(',')
+            if r == rang and k == kind:
+                result.append(l)
+        return result
+
+    @classmethod
+    def create_new_user(cls, user_type) -> None:
+        """ Создание нового пользователя в БД """
         gender = cls.get_random_gender()
         first_name, last_name = cls.get_random_full_name(gender)
         username = cls.gen_username(first_name, last_name)
+        image = choice(cls.get_images_by_filter(rang=gender, kind=user_type))
         # TODO: вернуть юзерам пароли pbkdf2_sha256
         # get_user_model().objects.create(
         get_user_model().objects.create_user(
@@ -97,29 +112,30 @@ class Populator:
             gender=gender,
             type=user_type,
             date_of_birth=cls.gen_birthday(user_type),
+            photo=image,
         )
 
     @classmethod
-    def create_new_course(cls, course_title):
-        """ Создание нового отделения """
+    def create_new_course(cls, course_title) -> None:
+        """ Создание нового отделения в БД """
         if not Validator.is_value_present_in_db(course_title, Course, 'title'):
             Course.objects.create(title=course_title, description=course_title)
 
     @classmethod
-    def create_courses(cls):
+    def create_courses(cls) -> None:
         """ Парсер для создания новых отделений """
         for course in cls.data.courses:
             cls.create_new_course(course)
 
     @classmethod
-    def create_new_subject(cls, subject_title, course_title):
-        """ Создание нового предмета """
+    def create_new_subject(cls, subject_title, course_title) -> None:
+        """ Создание нового предмета в БД """
         if not Validator.is_two_values_present_in_same_entry([subject_title, course_title], Subject,
                                                              ['title', 'course_id']):
             Subject.objects.create(title=subject_title, course=course_title, description=subject_title)
 
     @classmethod
-    def create_subjects(cls):
+    def create_subjects(cls) -> None:
         """ Парсер для создания нового предмета """
         pointer = 0
         for course in Course.objects.all():
@@ -131,15 +147,15 @@ class Populator:
             pointer += 1
 
     @classmethod
-    def link_teacher_to_course(cls, teacher, course):
-        """ Связывание преподавателя с отделением """
+    def link_teacher_to_course(cls, teacher, course) -> None:
+        """ Связывание преподавателя с отделением и сохранение связи в БД """
         # if not Validator.is_value_present_in_db(teacher.pk, Teacher, 'teacher'):
         if not Validator.is_two_values_present_in_same_entry(
                 [teacher.pk, course.pk], Teacher, ['teacher', 'course']):
             Teacher.objects.create(teacher=teacher, course=course)
 
     @classmethod
-    def link_teachers_to_courses(cls):
+    def link_teachers_to_courses(cls) -> None:
         """ Парсер для связывания преподавателей с отделениями """
         courses = Course.objects.all()
         teachers = get_user_model().objects.filter(type=get_user_model().Types.STAFF)
@@ -155,8 +171,8 @@ class Populator:
                     break
 
     @classmethod
-    def create_classrooms(cls, floors, rooms):
-        """ Генерация номеров кабинетов """
+    def create_classrooms(cls, floors, rooms) -> None:
+        """ Генерация номеров кабинетов в БД """
         for i in range(1, floors + 1):
             for j in range(1, rooms + 1):
                 room = f'{i}.{j}'
@@ -164,8 +180,8 @@ class Populator:
                     Classroom.objects.create(title=room, description=f'Аудитория {room}')
 
     @classmethod
-    def parse_schedule_grid_to_db(cls):
-        """ Создание недельной сетки расписания """
+    def parse_schedule_grid_to_db(cls) -> None:
+        """ Создание недельной сетки расписания в БД """
         for day in range(1, 7):  # (воскресенье выходной)
             for enum, item in enumerate(cls.data.schedule_grid, start=1):
                 # enum - порядковый номер занятия
@@ -188,8 +204,10 @@ class Populator:
                     )
 
     @classmethod
-    def get_week_schedule_grid(cls):
-        """ Геттер таблицы недельной сетки расписания """
+    def get_week_schedule_grid(cls) -> dict[int, list[int]]:
+        """ Геттер таблицы недельной сетки расписания в упрощенном формате:
+            {Номер_дня_недели: [список_слотов_расписания]}
+        """
         result: dict = {}
         for item in ScheduleGrid.objects.all():
             result.setdefault(item.week_day, [])
@@ -197,8 +215,10 @@ class Populator:
         return result
 
     @classmethod
-    def get_courses_with_subjects(cls):
-        """ Геттер таблицы связи отделений с предметами """
+    def get_courses_with_subjects(cls) -> dict[int, list[str]]:
+        """ Геттер таблицы связи отделений с предметами в упрощенном формате:
+            {ID_отделения: [список_предметов]}
+        """
         result: dict = {}
         for item in Subject.objects.all():
             result.setdefault(item.course_id, [])
@@ -206,8 +226,10 @@ class Populator:
         return result
 
     @classmethod
-    def generate_schedule(cls):
-        """ Генерация расписания с привязкой ко времени предмета, преподавателя и аудитории """
+    def generate_schedule(cls) -> None:
+        """ Генерация расписания с привязкой ко времени, предмету,
+            преподавателю и аудитории с сохранением в БД
+        """
         Schedule.objects.all().delete()
         grid = cls.get_week_schedule_grid()
         subjects_list = cls.get_courses_with_subjects()
@@ -244,3 +266,32 @@ class Populator:
 
         # print(grid)
         # print(subjects_list)
+
+    @classmethod
+    def get_news_with_titles(cls) -> dict[str, str]:
+        """ Сборка заголовков и новостей """
+        news_with_titles = {}
+        for title in cls.data.news_titles:
+            news_with_titles.setdefault(title, None)
+        i = 0
+        for title, data in news_with_titles.items():
+            news_item = ''
+            while i < len(cls.data.news):
+                if cls.data.news[i] == '<--->':
+                    i += 1
+                    # print(news_item)
+                    news_with_titles[title] = news_item
+                    break
+                # Если в конце предложения нет пробела, значит следующее с новой строки.
+                news_item += (cls.data.news[i]
+                              if (cls.data.news[i].endswith('. ') or cls.data.news[i].endswith('! '))
+                              else cls.data.news[i] + '\n')
+                i += 1
+        return news_with_titles
+
+    @classmethod
+    def generate_news(cls):
+        # Article.objects.all().delete()
+        print(cls.data.news)
+        print(cls.data.news_titles)
+        print(cls.data.hosted_links)
