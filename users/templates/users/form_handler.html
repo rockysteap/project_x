@@ -1,4 +1,3 @@
-{% load user_tags %}
 <!-- Template title -->
 <div class="m-1 text-center"><h1>{{ template_title }}</h1></div>
 <!-- Form type and container width -->
@@ -7,18 +6,7 @@
     <form method="post" enctype="multipart/form-data">
 
     {% if user.photo %}
-        {#        Checking for image path - Path to profile page - kill it on prod #}
-        {#        <div class="text-danger p-3">{{ user.photo.url }}</div>#}
-        {% with user.photo.url|slice:":21" as path_checker %}
-            {% if path_checker == '{{ path_filter }}' %}
-                {% with user.photo.url|slice:"7:" as path %}
-                    <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg"
-                                                src="{{ 'https://'|concat_strings:path }}">
-                {% endwith %}
-            {% else %}
-                <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg" src="{{ user.photo.url }}">
-            {% endif %}
-        {% endwith %}
+        {% include 'users/photo_handler.html' %}
     {% else %}
         <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg" src="{{ default_user_image }}">
     {% endif %}
@@ -43,9 +31,9 @@
                type="{{ f.field.widget.input_type }}"
                id="{{ f.id_for_label }}" autocomplete="off"
                 {% if f.name == 'date_of_birth' %}
-                   value="{% if f.value %}{{ f.value|date:"d.m.Y" }}{% endif %}"
+               value="{% if f.value %}{{ f.value|date:"d.m.Y" }}{% endif %}"
                 {% else %}
-                   value="{% if f.value %}{{ f.value }}{% endif %}"
+               value="{% if f.value %}{{ f.value }}{% endif %}"
                 {% endif %}
                placeholder="">
         <label for="{{ f.id_for_label }}">{{ f.label }}</label>

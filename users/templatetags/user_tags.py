@@ -3,12 +3,11 @@ from django import template
 register = template.Library()
 
 
-@register.filter
+@register.filter()
 def concat_strings(str1, str2):
     return str1 + str2
 
 
-@register.simple_tag
-def path_filter():
-    filter_url = '/media/playground.com'
-    return filter_url
+@register.simple_tag()
+def external_image_hosting():
+    return 'iimg.su'
