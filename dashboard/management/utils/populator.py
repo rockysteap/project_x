@@ -54,7 +54,7 @@ class Populator:
 
     @classmethod
     def get_unique_random_male_fullname(cls) -> tuple[str, str]:
-        """ Генерация уникального (с точки зрения текущей БД) имени пользователя мужского пола """
+        """ Генерация уникального (для текущей БД) имени пользователя мужского пола """
         for _ in range(999):  # максимальное кол-во попыток
             f, l = choice(cls.data.men_first_names), choice(cls.data.men_last_names)
             if not Validator.is_value_present_in_db(cls.gen_username(f, l), get_user_model(), 'username'):
@@ -62,7 +62,7 @@ class Populator:
 
     @classmethod
     def get_unique_random_female_fullname(cls) -> tuple[str, str]:
-        """ Генерация уникального (с точки зрения текущей БД) имени пользователя женского пола """
+        """ Генерация уникального (для текущей БД) имени пользователя женского пола """
         for _ in range(999):  # максимальное кол-во попыток
             f, l = choice(cls.data.women_first_names), choice(cls.data.women_last_names)
             if not Validator.is_value_present_in_db(cls.gen_username(f, l), get_user_model(), 'username'):
@@ -290,8 +290,17 @@ class Populator:
         return news_with_titles
 
     @classmethod
+    def create_news_article(cls, title: str, content: str, image_url: str = None, is_published: bool = False) -> None:
+        """ Генерация новостной записи с уникальным (для текущей БД) заголовком """
+        if not Validator.is_value_present_in_db(title, Article, 'title'):
+            Article.objects.create(title=title, content=content, image_main=image_url, is_published=is_published)
+
+    @classmethod
     def generate_news(cls):
-        # Article.objects.all().delete()
-        print(cls.data.news)
-        print(cls.data.news_titles)
-        print(cls.data.hosted_links)
+        """ Генерация новостных записей """
+        Article.objects.all().delete()
+        news_dict = cls.get_news_with_titles()
+        images = cls.get_images_by_filter('N', 'NEWS')
+        for title, news_item in news_dict.items():
+            image = choice(images)
+            cls.create_news_article(title=title, content=news_item, image_url=image, is_published=True)
