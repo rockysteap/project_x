@@ -11,15 +11,25 @@ User = get_user_model()
 
 
 class Command(BaseCommand):
+    """ Парсер служит для генерации популяции БД """
+
+    def add_arguments(self, parser):
+        parser.add_argument('admin', type=int, default=0, help='Количество администраторов')
+        parser.add_argument('staff', type=int, default=0, help='Количество преподавателей')
+        parser.add_argument('parents', type=int, default=0, help='Количество родителей')
+        parser.add_argument('students', type=int, default=0, help='Количество студентов')
 
     def handle(self, *args, **options):
-        # --------------------------------------------
-        # Сгенерируем популяцию
-        # --------------------------------------------
-        # Для корректной генерации расписания необходимо
-        # изначально сгенерировать минимум 20 учителей (staff)
-        # admin, staff, parents, students = 2, 20, 50, 75
-        admin, staff, parents, students = 0, 0, 0, 0
+        """ --------------------------------------------
+            Сгенерируем популяцию
+            --------------------------------------------
+        Для корректной генерации расписания необходимо при первой генерации указать не менее 20 преподавателей (staff).
+        При запуске без параметров используется количество по умолчанию равное нулю.
+        При каждом повторном запуске происходит реконфигурация связей, например, учителей и студентов с отделениями,
+        при этом данные учетных записей не меняются.
+        """
+        admin, staff, parents, students = (
+            options.get('admin'), options.get('staff'), options.get('parents'), options.get('students'))
         for _ in range(admin):
             Populator.create_new_user(User.Types.ADMIN)
         for _ in range(staff):
@@ -68,4 +78,6 @@ class Command(BaseCommand):
         # Сгенерируем новости
         # --------------------------------------------
         Populator.generate_news()
+        # --------------------------------------------
+        self.stdout.write('Готово')
         # --------------------------------------------
