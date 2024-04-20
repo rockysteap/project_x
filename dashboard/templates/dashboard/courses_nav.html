@@ -1,0 +1,7 @@
+<nav class="navbar" aria-label="Courses navigation">
+    <div class="container-fluid justify-content-center">
+        {% for course in courses %}
+                <a class="btn btn-outline-secondary m-1 p-1 px-2" href="{{ course.get_absolute_url }}">{{ course.title }}</a>
+        {% endfor %}
+    </div>
+</nav>

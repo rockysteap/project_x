@@ -12,7 +12,6 @@ from users.forms import RegisterUserForm, LoginUserForm, ProfileUserForm, UserPa
 class LoginUser(ExtraContextMixin, LoginView):
     form_class = LoginUserForm
     template_name = 'users/login.html'
-    # Extra context:
     template_title = 'Авторизация'
     btn_submit_title = 'Авторизоваться'
 
@@ -21,7 +20,6 @@ class RegisterUser(ExtraContextMixin, CreateView):
     form_class = RegisterUserForm
     template_name = 'users/register.html'
     success_url = reverse_lazy('users:login')
-    # Extra context:
     template_title = 'Регистрация'
     btn_submit_title = 'Отправить'
 
@@ -31,7 +29,6 @@ class ProfileUser(LoginRequiredMixin, ExtraContextMixin, UpdateView):
     form_class = ProfileUserForm
     template_name = 'users/profile.html'
     success_url = reverse_lazy('users:profile')
-    # Extra context:
     template_title = 'Профиль пользователя'
     btn_submit_title = 'Обновить'
 

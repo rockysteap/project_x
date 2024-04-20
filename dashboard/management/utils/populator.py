@@ -7,7 +7,7 @@ from django.utils import timezone
 from dashboard.management.utils.data_reader import DataReader
 from dashboard.management.utils.validator import Validator
 from dashboard.management.utils.transliterator import Transliterator
-from dashboard.models import Course, Subject, ScheduleGrid, Schedule, Classroom, Teacher, Article
+from dashboard.models import Course, Subject, ScheduleGrid, Schedule, Classroom, Teacher, Article, Student
 
 
 class Populator:
@@ -150,7 +150,6 @@ class Populator:
     @classmethod
     def link_teacher_to_course(cls, teacher, course) -> None:
         """ Связывание преподавателя с отделением и сохранение связи в БД """
-        # if not Validator.is_value_present_in_db(teacher.pk, Teacher, 'teacher'):
         if not Validator.is_two_values_present_in_same_entry(
                 [teacher.pk, course.pk], Teacher, ['teacher', 'course']):
             Teacher.objects.create(teacher=teacher, course=course)
@@ -158,10 +157,12 @@ class Populator:
     @classmethod
     def link_teachers_to_courses(cls) -> None:
         """ Парсер для связывания преподавателей с отделениями """
-        courses = Course.objects.all()
-        teachers = get_user_model().objects.filter(type=get_user_model().Types.STAFF)
+        Teacher.objects.all().delete()
+        courses = Course.objects.all().order_by('?')
+        teachers = get_user_model().objects.filter(type=get_user_model().Types.STAFF).order_by('?')
         # Распределим преподавателей поровну
-        teachers_per_course = len(teachers) / len(courses)
+        # (количество преподавателей разделим на количество отделений без остатка)
+        teachers_per_course = len(teachers) // len(courses)
         counter = 0
         for course in courses:
             while counter < len(teachers):
@@ -170,6 +171,41 @@ class Populator:
                 counter += 1
                 if counter % teachers_per_course == 0:
                     break
+        # найдем оставшихся и привяжем к случайным отделениям
+        remaining_teachers = get_user_model().objects.filter(type=get_user_model().Types.STAFF, teachers__isnull=True)
+        for teacher in remaining_teachers:
+            random_course = choice(courses)
+            cls.link_teacher_to_course(teacher, random_course)
+
+    @classmethod
+    def link_student_to_course(cls, student, course) -> None:
+        """ Связывание студента с отделением и сохранение связи в БД """
+        if not Validator.is_two_values_present_in_same_entry(
+                [student.pk, course.pk], Student, ['student', 'course']):
+            Student.objects.create(student=student, course=course)
+
+    @classmethod
+    def link_students_to_courses(cls) -> None:
+        """ Парсер для связывания студентов с отделениями """
+        Student.objects.all().delete()
+        courses = Course.objects.all().order_by('?')
+        students = get_user_model().objects.filter(type=get_user_model().Types.STUDENT).order_by('?')
+        # Распределим студентов поровну
+        # (количество студентов разделим на количество отделений без остатка)
+        students_per_course = len(students) // len(courses)
+        counter = 0
+        for course in courses:
+            while counter < len(students):
+                student = students[counter]
+                cls.link_student_to_course(student, course)
+                counter += 1
+                if counter % students_per_course == 0:
+                    break
+        # найдем оставшихся и привяжем к случайным отделениям
+        remaining_students = get_user_model().objects.filter(type=get_user_model().Types.STUDENT, student__isnull=True)
+        for student in remaining_students:
+            random_course = choice(courses)
+            cls.link_student_to_course(student, random_course)
 
     @classmethod
     def create_classrooms(cls, floors, rooms) -> None:

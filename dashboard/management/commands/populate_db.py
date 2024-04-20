@@ -5,7 +5,6 @@ from django.core.management import BaseCommand
 
 from dashboard.management.utils.validator import Validator
 from dashboard.management.utils.populator import Populator
-from dashboard.models import Teacher
 from users.models import Family
 
 User = get_user_model()
@@ -19,8 +18,8 @@ class Command(BaseCommand):
         # --------------------------------------------
         # Для корректной генерации расписания необходимо
         # изначально сгенерировать минимум 20 учителей (staff)
-        admin, staff, parents, students = 2, 20, 50, 75
-        # admin, staff, parents, students = 0, 0, 0, 0
+        # admin, staff, parents, students = 2, 20, 50, 75
+        admin, staff, parents, students = 0, 0, 0, 0
         for _ in range(admin):
             Populator.create_new_user(User.Types.ADMIN)
         for _ in range(staff):
@@ -43,10 +42,13 @@ class Command(BaseCommand):
         Populator.create_courses()
         Populator.create_subjects()
         # --------------------------------------------
-        # Научим преподавателей - привяжем к предметам
+        # Научим преподавателей - привяжем к отделениям
         # --------------------------------------------
-        Teacher.objects.all().delete()
         Populator.link_teachers_to_courses()
+        # --------------------------------------------
+        # Привяжем студентов к предметам
+        # --------------------------------------------
+        Populator.link_students_to_courses()
         # --------------------------------------------
         # Добавим аудитории
         # --------------------------------------------

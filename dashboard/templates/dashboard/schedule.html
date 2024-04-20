@@ -1,0 +1,39 @@
+{% extends 'master.html' %}
+{% load user_tags %}
+
+{% block content %}
+<div class="my-3 text-center"><h2>{{ template_title }}</h2></div>
+<div class="container-fluid justify-content-center custom-width-1200">
+    <!-- Generate schedule by row -->
+    {% for row in 12|custom_range:0 %}
+        <div class="row">
+        <!-- Generate each slot for every row -->
+        {% for day in 6|custom_range:1 %}
+            <div class="col-2 p-0 m-0">
+            <!-- Create universal key to match context -->
+            {% with row_string=row|stringformat:"s"  day_string=day|stringformat:"s" %}
+                {% with key=row_string|concat_strings:day_string %}
+                    <!-- Query using universal key -->
+                    {% if key in schedules.keys %}
+                        <!-- Looking up needed data -->
+                        {% with schedule=schedules|get_item_by_key:key %}
+                            {% include 'dashboard/schedule_class_item.html' %}
+                        {% endwith %}
+                    {% else %}
+                        <!-- With no key add weekday label on first row or empty item small box -->
+                        {% if row == 0 %}
+                            {% with day=week|get_item_by_key:forloop.counter %}
+                                {% include 'dashboard/schedule_weekday_label.html' %}
+                            {% endwith %}
+                        {%  else %}
+                                {% include 'dashboard/schedule_empty_item.html' %}
+                        {%  endif %}
+                    {% endif %}
+                {% endwith %}
+            {% endwith %}
+            </div>
+        {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

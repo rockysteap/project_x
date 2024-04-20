@@ -1,0 +1,16 @@
+{% load user_tags %}
+
+{% external_image_hosting as hosting %}
+{% with hosting|length|stringformat:"i" as hl %}
+    {% with sliced_tale=hl|concat_strings:":" sliced_head=":"|concat_strings:hl %}
+        {% with teacher_object.teacher.photo.url|slice:sliced_tale|slice:sliced_head as part_of_user_photo_url %}
+            {% if part_of_user_photo_url == hosting %}
+                {% with teacher_object.teacher.photo.url|slice:sliced_tale as path %}
+                    <img class="float-start card-img-top shadow-lg mt-2 me-2" src="{{ 'https://'|concat_strings:path }}">
+                {% endwith %}
+            {% else %}
+                <img class="float-start card-img-top shadow-lg mt-2 me-2 custom-width-300" src="{{ teacher_object.teacher.photo.url }}">
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+{% endwith %}

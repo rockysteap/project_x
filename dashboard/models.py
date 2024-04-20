@@ -78,7 +78,12 @@ class Subject(models.Model):
 
 
 class Teacher(models.Model):
-    teacher = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    teacher = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='teachers')
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='courses')
+
+
+class Student(models.Model):
+    student = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     course = models.ForeignKey('Course', on_delete=models.CASCADE)
 
 

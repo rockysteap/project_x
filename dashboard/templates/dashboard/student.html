@@ -1,0 +1,43 @@
+{% extends 'master.html' %}
+{% load user_tags %}
+
+{% block content %}
+    <div class="my-3 text-center"><h2>{{ template_title }}</h2></div>
+
+    <div class="container-fluid justify-content-center custom-width-1200">
+        <!-- Generate slots as columns using invert keys from context -->
+
+        <div class="row">
+        {% for weekday in 6|custom_range:1 %}
+            <div class="col-2 p-0 m-0">
+                <!-- Generate schedule by slots -->
+                {% for row in 12|custom_range:0 %}
+                    {% if row == 0 %}
+                        <div class="row">
+                            {% with day=week|get_item_by_key:weekday %}
+                                {% include 'dashboard/schedule_weekday_label.html' %}
+                            {% endwith %}
+                        </div>
+                    {% endif %}
+
+                        <!-- Create universal key for context -->
+                        {% with row_string=row|stringformat:"s" weekday_string=weekday|stringformat:"s" %}
+                            {% with key=weekday_string|concat_strings:row_string %}
+                                <!-- Query using universal key -->
+                                {% if key in student_schedules.keys %}
+                                    <div class="row">
+                                    <!-- Looking up needed data -->
+                                    {% with schedule=student_schedules|get_item_by_key:key %}
+                                        {% include 'dashboard/schedule_class_item.html' %}
+                                    {% endwith %}
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                        {% endwith %}
+
+                {% endfor %}
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}

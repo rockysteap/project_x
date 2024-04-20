@@ -1,35 +1,29 @@
 {% load user_tags %}
 
-{% if is_paginated %}
+{% if page_obj.has_other_pages %}
 
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-end">
-            <li class=" btn-outline-secondary">
-                {% if page_obj.has_previous %}
-                    <a class="page-link" href="/news?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                {% endif %}
-            </li>
+    <div class="container text-end custom-width-700 mb-3">
+        <div class="btn-group bg-body-secondary me-2" style="opacity: 75%" role="group">
+            {% if page_obj.has_previous %}
+                <a class="btn btn-outlined-secondary enabled" style="font-size: small"
+                   href="/news?page={{ page_obj.previous_page_number }}">пред</a>
+            {% endif %}
+
             {% for page in page_obj.paginator.num_pages|custom_range:1 %}
-                <span class="page-current">
-                    {% if forloop.counter == page_obj.number %}
-                        <li class="page-item disabled"><a class="page-link">{{ forloop.counter }}</a></li>
-                    {% else %}
-                        <li class="page-item btn-outline-secondary"><a class="page-link"
-                             href="/news?page={{ forloop.counter }}">{{ forloop.counter }}</a>
-                        </li>
-                    {% endif %}
-                </span>
-            {% endfor %}
-            <li class="page-item">
-                {% if page_obj.has_next %}
-                    <a class="page-link" href="/news?page={{ page_obj.next_page_number }}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
+                {% if forloop.counter == page_obj.number %}
+                    <a class="btn btn-outlined-secondary disabled" style="font-size: small">
+                        {{ forloop.counter }}</a>
+                {% else %}
+                    <a class="btn btn-outlined-secondary" style="font-size: small"
+                       href="/news?page={{ forloop.counter }}">{{ forloop.counter }}</a>
                 {% endif %}
-            </li>
-        </ul>
-    </nav>
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a class="btn btn-outlined-secondary" style="font-size: small"
+                   href="/news?page={{ page_obj.next_page_number }}">след</a>
+            {% endif %}
+        </div>
+    </div>
 
 {% endif %}

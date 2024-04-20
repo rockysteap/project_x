@@ -1,0 +1,27 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+    {% include 'dashboard/courses_nav.html' %}
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+
+            {% for teacher_object in course_teachers %}
+                <div class="card m-1" style="width: 16rem;">
+                    {% if teacher_object.teacher.photo %}
+                        {% include 'dashboard/teacher_photo_handler.html' %}
+                    {% else %}
+                        <img class="float-start shadow-lg mt-2 me-2" src="https://placehold.co/300">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ teacher_object.teacher }}</h5>
+                        <p class="card-text">{{ teacher_object.course }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+{% endblock %}

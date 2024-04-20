@@ -1,16 +1,16 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
 from django.views.generic import CreateView, DetailView, ListView, RedirectView, View
 
 from dashboard.forms import AddArticleForm
-from dashboard.models import Article, Course
-from dashboard.utils import ExtraContextMixin
+from dashboard.models import Article, Course, Teacher, Schedule, Student
+from dashboard.utils import ExtraContextMixin, week
 
 
 def page_not_found(request, exception):
-    return HttpResponseNotFound('<h1>Похоже страницу украли!</h1>')
+    return HttpResponseNotFound('<h1>Похоже страницу украли!</h1>', exc_info=exception)
 
 
 class AboutView(ExtraContextMixin, View):
@@ -74,3 +74,74 @@ class ShowCourses(ExtraContextMixin, ListView):
 
     def get_queryset(self):
         return Course.objects.all()
+
+
+class ShowCourseTeachers(ExtraContextMixin, ListView):
+    template_name = 'dashboard/teachers.html'
+    context_object_name = 'course_teachers'
+    template_title = 'Преподаватели'
+    slug_url_kwarg = 'course_slug'
+
+    def get_queryset(self):
+        return Teacher.objects.filter(course_id=get_object_or_404(Course, slug=self.kwargs['course_slug']))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return self.get_mixin_context(context, courses=Course.objects.all())
+
+
+class ScheduleDataSet:
+    @classmethod
+    def create_schedule_data_set(cls, user_obj=None, invert_main_key=False):
+        """Создадим набор данных из schedule queryset с упрощенными ключами
+           Упрощенный ключ - строка в формате '<номер_слота_расписания><порядковый_номер_дня_недели>'
+           invert_main_key - строка в формате '<порядковый_номер_дня_недели><номер_слота_расписания>'
+           Набор данных в формате: {'Ключ': {'': ''}, {'': ''}, {'': ''},}
+        """
+        data = {}
+        queryset = Schedule.objects.filter(course_id=user_obj.course_id) if user_obj else Schedule.objects.all()
+        for schedule in queryset:
+            key = (f'{schedule.slot.slot_number}{schedule.slot.week_day}' if not invert_main_key
+                   else f'{schedule.slot.week_day}{schedule.slot.slot_number}')
+            data.setdefault(key, {})
+            data[key]['time_start'] = f'{schedule.slot.time_start}'
+            data[key]['time_end'] = f'{schedule.slot.time_end}'
+            data[key]['subject'] = f'{schedule.subject.title}'
+            data[key]['classroom'] = f'{schedule.classroom.title}'
+            data[key]['teacher'] = f'{schedule.teacher.teacher}'
+            data[key]['course'] = f'{schedule.course.title}'
+        return data
+
+
+class GenericSchedule(ExtraContextMixin, ListView):
+    template_name = 'dashboard/schedule.html'
+    context_object_name = 'schedules'
+    template_title = 'Общее расписание'
+
+    def get_queryset(self):
+        return ScheduleDataSet.create_schedule_data_set()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return self.get_mixin_context(context, courses=Course.objects.all(), week=week,
+                                      today=timezone.now().isoweekday())
+
+
+class StudentSchedule(LoginRequiredMixin, ExtraContextMixin, ListView):
+    template_name = 'dashboard/student.html'
+    context_object_name = 'student_schedules'
+    template_title = 'Кабинет студента'
+
+    def get_queryset(self):
+        student = None
+        try:
+            if self.request.user.is_authenticated:
+                student = Student.objects.get(student_id=self.request.user)
+        except Student.DoesNotExist:
+            return Student.objects.none()
+        return ScheduleDataSet.create_schedule_data_set(user_obj=student, invert_main_key=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return self.get_mixin_context(context, courses=Course.objects.all(), week=week,
+                                      today=timezone.now().isoweekday())
