@@ -98,8 +98,6 @@ class Populator:
         username = cls.gen_username(first_name, last_name)
         images = cls.get_images_by_filter(rang=gender, kind=user_type)
         image = choice(images) if images else None
-        # TODO: вернуть юзерам пароли pbkdf2_sha256
-        # get_user_model().objects.create(
         get_user_model().objects.create_user(
             username=username,
             first_name=first_name,
@@ -115,6 +113,7 @@ class Populator:
             date_of_birth=cls.gen_birthday(user_type),
             photo=image,
         )
+        print('.', end='')
 
     @classmethod
     def create_new_course(cls, course_title) -> None:
@@ -160,7 +159,7 @@ class Populator:
         Teacher.objects.all().delete()
         courses = Course.objects.all().order_by('?')
         teachers = get_user_model().objects.filter(type=get_user_model().Types.STAFF).order_by('?')
-        # Распределим преподавателей поровну
+        # Распределим преподавателей поровну или примерно поровну
         # (количество преподавателей разделим на количество отделений без остатка)
         teachers_per_course = len(teachers) // len(courses)
         counter = 0
@@ -190,7 +189,7 @@ class Populator:
         Student.objects.all().delete()
         courses = Course.objects.all().order_by('?')
         students = get_user_model().objects.filter(type=get_user_model().Types.STUDENT).order_by('?')
-        # Распределим студентов поровну
+        # Распределим студентов поровну или примерно поровну
         # (количество студентов разделим на количество отделений без остатка)
         students_per_course = len(students) // len(courses)
         counter = 0

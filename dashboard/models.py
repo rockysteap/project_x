@@ -41,6 +41,7 @@ class Article(models.Model):
 
     class Meta:
         verbose_name = 'Новости'
+        verbose_name_plural = 'Новости'
         ordering = ['-time_created']
         indexes = [
             models.Index(fields=['-time_created'])
@@ -81,10 +82,18 @@ class Teacher(models.Model):
     teacher = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='teachers')
     course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='courses')
 
+    class Meta:
+        verbose_name = 'Преподаватель'
+        verbose_name_plural = 'Преподаватели'
+
 
 class Student(models.Model):
     student = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     course = models.ForeignKey('Course', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Студент'
+        verbose_name_plural = 'Студенты'
 
 
 class Classroom(models.Model):

@@ -3,8 +3,27 @@
 
 {% block content %}
     <div class="my-3 text-center"><h2>{{ template_title }}</h2></div>
-
     <div class="container-fluid justify-content-center custom-width-1200">
+
+    <div class="row">
+        <div class="col-6 p-0 m-0 custom-width-250">
+            {% if user.photo %}
+                {% include 'users/user_photo_handler.html' %}
+            {% else %}
+                <p class="text-center"><img class="rounded img-thumbnail w-75 shadow-lg" src="{{ default_user_image }}">
+            {% endif %}
+        </div>
+        <div class="col p-0 m-0 justify-content-start">
+            <div class="h4">{{ user.first_name }} {{ user.last_name }}</div>
+            {% if course %}
+                <div class="h5">{{ course }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div class="my-3 text-center"><h3>Мое расписание</h3></div>
+    <!-- Schedule -->
         <!-- Generate slots as columns using invert keys from context -->
 
         <div class="row">

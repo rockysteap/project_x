@@ -7,6 +7,7 @@ from django.views.generic import CreateView, DetailView, ListView, RedirectView,
 from dashboard.forms import AddArticleForm
 from dashboard.models import Article, Course, Teacher, Schedule, Student
 from dashboard.utils import ExtraContextMixin, week
+from project_x import settings
 
 
 def page_not_found(request, exception):
@@ -64,7 +65,7 @@ class ShowNews(ExtraContextMixin, ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return Article.objects.order_by('-time_updated')
+        return Article.objects.filter(is_published=True).order_by('-time_updated')
 
 
 class ShowCourses(ExtraContextMixin, ListView):
@@ -141,7 +142,18 @@ class StudentSchedule(LoginRequiredMixin, ExtraContextMixin, ListView):
             return Student.objects.none()
         return ScheduleDataSet.create_schedule_data_set(user_obj=student, invert_main_key=True)
 
+    def get_course(self):
+        student = None
+        try:
+            if self.request.user.is_authenticated:
+                student = Student.objects.get(student_id=self.request.user)
+        except Student.DoesNotExist:
+            return Student.objects.none()
+        return student.course
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return self.get_mixin_context(context, courses=Course.objects.all(), week=week,
-                                      today=timezone.now().isoweekday())
+                                      today=timezone.now().isoweekday(),
+                                      course=self.get_course(),
+                                      default_user_image=settings.DEFAULT_USER_IMAGE)

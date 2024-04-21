@@ -1,4 +1,5 @@
 from django import template
+from project_x.settings import MEDIA_HOSTING
 
 register = template.Library()
 
@@ -16,10 +17,9 @@ def custom_range(value, start_index=0):
 
 @register.filter
 def get_item_by_key(dictionary, key):
-    # print(dictionary.get(key))  # TODO
     return dictionary.get(key)
 
 
 @register.simple_tag
 def external_image_hosting():
-    return 'iimg.su'
+    return MEDIA_HOSTING
