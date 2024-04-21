@@ -6,7 +6,7 @@
         <div class="btn-group bg-body-secondary me-2" style="opacity: 75%" role="group">
             {% if page_obj.has_previous %}
                 <a class="btn btn-outlined-secondary enabled" style="font-size: small"
-                   href="/news?page={{ page_obj.previous_page_number }}">пред</a>
+                   href="/news/?page={{ page_obj.previous_page_number }}">пред</a>
             {% endif %}
 
             {% for page in page_obj.paginator.num_pages|custom_range:1 %}
@@ -15,13 +15,13 @@
                         {{ forloop.counter }}</a>
                 {% else %}
                     <a class="btn btn-outlined-secondary" style="font-size: small"
-                       href="/news?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+                       href="/news/?page={{ forloop.counter }}">{{ forloop.counter }}</a>
                 {% endif %}
             {% endfor %}
 
             {% if page_obj.has_next %}
                 <a class="btn btn-outlined-secondary" style="font-size: small"
-                   href="/news?page={{ page_obj.next_page_number }}">след</a>
+                   href="/news/?page={{ page_obj.next_page_number }}">след</a>
             {% endif %}
         </div>
     </div>
