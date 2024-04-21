@@ -18,12 +18,12 @@ class Article(models.Model):
     category = models.CharField(choices=Category.choices, default=Category.STAFF, max_length=6,
                                 verbose_name='Категория')
     content = models.TextField(blank=True, verbose_name='Текст статьи')
-    # TODO swap before prod --------------------------------------------------------------------
-    # time_created = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
-    # time_updated = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
-    time_created = models.DateTimeField(verbose_name='Время создания')  # TODO swap before prod
-    time_updated = models.DateTimeField(verbose_name='Время изменения')  # TODO swap before prod
-    # TODO swap before prod --------------------------------------------------------------------
+    # Swap fo DB generation --------------------------------------------------------------------
+    time_created = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
+    time_updated = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
+    # time_created = models.DateTimeField(verbose_name='Время создания')
+    # time_updated = models.DateTimeField(verbose_name='Время изменения')
+    # Swap fo DB generation --------------------------------------------------------------------
     is_published = models.BooleanField(default=False, verbose_name='Опубликовано')
     image_main = models.ImageField(blank=True, null=True, upload_to='articles/images/%Y/%m/%d',
                                    verbose_name='Основное изображение')

@@ -1,3 +1,4 @@
+import sys
 from datetime import timedelta, time
 from random import choice, randint, shuffle
 
@@ -113,7 +114,8 @@ class Populator:
             date_of_birth=cls.gen_birthday(user_type),
             photo=image,
         )
-        print('.', end='')
+        sys.stdout.write('.')
+        sys.stdout.flush()
 
     @classmethod
     def create_new_course(cls, course_title) -> None:
