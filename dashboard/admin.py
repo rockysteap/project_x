@@ -7,8 +7,8 @@ from project_x.settings import MEDIA_HOSTING
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    fields = ['title', 'slug', 'category', 'content', 'time_created', 'time_updated', 'is_published', 'image_main']
-    readonly_fields = ['time_created', 'time_updated', 'image_main']
+    fields = ['title', 'slug', 'category', 'content', 'time_created', 'time_updated', 'is_published', 'article_image', 'image_main']
+    readonly_fields = ['time_created', 'time_updated', 'article_image']
     prepopulated_fields = {'slug': ('title',)}
     list_display = ['title', 'article_image', 'time_updated', 'category', 'is_published']
     list_display_links = ['title']
@@ -23,7 +23,7 @@ class ArticleAdmin(admin.ModelAdmin):
         if obj.image_main:
             url = f'{obj.image_main.url}'
             if MEDIA_HOSTING in url:
-                url = f'{url.replace('/media', 'https:/')}'
+                url = f"{url.replace('/media', 'https:/')}"
                 return mark_safe(f"<img src='{url}' width=50>")
         return 'Без изображения'
 
