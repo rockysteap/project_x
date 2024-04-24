@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'dashboard',
     'users',
 ]
@@ -56,8 +57,7 @@ ROOT_URLCONF = 'project_x.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -196,3 +196,13 @@ LOGGING = {
         },
     },
 }
+
+# graphviz ERD conf
+# import os
+#
+# GRAPH_MODELS = {
+#     'all_applications': True,
+#     'group_models': True,
+# }
+# os.environ["PATH"] = ''
+# os.environ["PATH"] += os.pathsep + 'C:\Program Files\Graphviz\\bin'

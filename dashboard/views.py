@@ -11,7 +11,7 @@ from project_x import settings
 
 
 def page_not_found(request, exception):
-    return HttpResponseNotFound('<h1>Похоже страницу украли!</h1>', exc_info=exception)
+    return HttpResponseNotFound('<h1>Похоже страницу того.. свистнулиукрали!</h1>', exc_info=exception)
 
 
 class AboutView(ExtraContextMixin, View):
