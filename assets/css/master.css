@@ -1,5 +1,7 @@
-body {
-    background-color: #c9c9c9;
+#main_bg {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 .custom-width-160 {

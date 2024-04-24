@@ -14,7 +14,7 @@
     <!-- Styles -->
     <link type="text/css" rel="stylesheet" href="{% static 'css/master.css' %}">
 </head>
-<body>
+<body id="main_bg" style="background-image: url({% static 'images/bg.jpg' %})">
 
 {% include 'upper_nav_bar.html' %}
 
@@ -23,9 +23,9 @@
 
 {% include 'footer.html' %}
 
-    <!-- Bootstrap -- Latest compiled JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
+<!-- Bootstrap -- Latest compiled JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
 </html>
