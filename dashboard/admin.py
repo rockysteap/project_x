@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
 
-from .models import Article, Course, Student, Teacher
+from .models import Article, Student, Teacher
 from project_x.settings import MEDIA_HOSTING
 
 

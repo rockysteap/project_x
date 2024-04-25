@@ -25,12 +25,10 @@ class RegisterUserForm(UserCreationForm):
         fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2']
         required = ['username', 'email', 'password1', 'password2']
         labels = {
-            'email': 'E-mail',
             'first_name': 'Имя',
             'last_name': 'Фамилия',
         }
         widgets = {
-            'email': forms.TextInput(),
             'first_name': forms.TextInput(),
             'last_name': forms.TextInput(),
         }
