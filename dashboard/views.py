@@ -10,8 +10,8 @@ from dashboard.utils import ExtraContextMixin, week
 from project_x import settings
 
 
-def page_not_found(request, exception):
-    return HttpResponseNotFound('<h1>Похоже страницу того.. свистнулиукрали!</h1>', exc_info=exception)
+def error_404(request, exception):
+    return render(request, '404.html', status=404)
 
 
 class AboutView(ExtraContextMixin, View):
