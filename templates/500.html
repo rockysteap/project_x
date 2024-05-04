@@ -1,0 +1,15 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+    <div class="row text-center my-5">
+        <div class="fs-1 my-5">ОГО! Отличная работа!</div>
+        <div class="fs-1 ">Похоже вы добились сбоя сервера!</div>
+        <div class="h1">500</div>
+        <div class="h3">SERVER ERROR</div>
+        <div class="h3">Видимо вы попытались восстановить пароль с помощью email</div>
+        <div class="h3">Как оказалось, pythonanywhere нормально не работает с smtp на бесплатных аккаунтах.</div>
+        <a class="h3" href="https://help.pythonanywhere.com/pages/SMTPForFreeUsers/" >help.pythonanywhere.com</a>
+    </div>
+
+{% endblock %}

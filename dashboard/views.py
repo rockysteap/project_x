@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.http import HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.generic import CreateView, DetailView, ListView, RedirectView, View
@@ -12,6 +11,10 @@ from project_x import settings
 
 def error_404(request, exception):
     return render(request, '404.html', status=404)
+
+
+def error_500(request):
+    return render(request, '500.html', status=500)
 
 
 class AboutView(ExtraContextMixin, View):
