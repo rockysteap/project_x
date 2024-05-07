@@ -88,7 +88,7 @@ class Teacher(models.Model):
 
 
 class Student(models.Model):
-    student = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    student = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, unique=True)
     course = models.ForeignKey('Course', on_delete=models.CASCADE)
 
     class Meta:
