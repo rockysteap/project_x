@@ -138,3 +138,7 @@ dmypy.json
 
 # User photos
 /media/
+/dashboard/templates/tmp.html
+/erd.dot
+/erd.png
+/img.png
