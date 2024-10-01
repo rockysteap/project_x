@@ -157,7 +157,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'art-school.mail.recovery@yandex.ru'
-EMAIL_HOST_PASSWORD = 'eqhinnqnsdlesvfv'
+EMAIL_HOST_PASSWORD = ''  # password added in prod
 EMAIL_USE_SSL = True
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
